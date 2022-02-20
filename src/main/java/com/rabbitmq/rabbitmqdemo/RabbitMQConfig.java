@@ -1,5 +1,9 @@
 package com.rabbitmq.rabbitmqdemo;
 
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.Exchange;
+import org.springframework.amqp.core.ExchangeBuilder;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -16,6 +20,22 @@ public class RabbitMQConfig {
     @Bean
     Queue myQueue() {
        return new Queue(MY_QUEUE, true);
+    }
+
+    @Bean
+    Exchange myExchange() {
+        return ExchangeBuilder.topicExchange("MyTopicExchange")
+                .durable(true)
+                .build();
+    }
+
+    @Bean
+    Binding myBinding() {
+        return BindingBuilder
+                .bind(myQueue())
+                .to(myExchange())
+                .with("topic")
+                .noargs();
     }
 
     @Bean
